@@ -68,7 +68,6 @@ func (a *Analyzer) DiscoverUsedMetricsFromLogs(logDir string, days int) (map[str
 }
 
 // parseLogFile scans a logFile for all expressions that are potentially metrics.
-// It breaks early once it hits entries older than the cutoff.
 func (a *Analyzer) parseLogFile(path string, found map[string]bool, cutoff time.Time) error {
 	f, err := os.Open(path)
 	if err != nil {
@@ -90,11 +89,12 @@ func (a *Analyzer) parseLogFile(path string, found map[string]bool, cutoff time.
 	for scanner.Scan() {
 		var entry QueryLogEntry
 		if err := json.Unmarshal(scanner.Bytes(), &entry); err != nil {
+			//potential improvement: read logfile from the end first and break upon first older date
 			continue
 		}
 
 		if entry.Time.Before(cutoff) {
-			break
+			continue
 		}
 
 		matches := MetricRegex.FindAllString(entry.Params.Query, -1)
