@@ -85,9 +85,9 @@ dashboard:
   port: 8080                             # On which port to serve the dashboard
 ```
 **The following keys are required:**
-- grafana: address
-- prometheus: address
-- server: port
+- `prometheus.address`
+- `grafana.address`
+- `dashboard.port`
 
 ### Enabling the Prometheus query log
 
